@@ -150,7 +150,7 @@ func saveObjectToStorage(requestHTTP *events.APIGatewayProxyRequest, stringPaylo
 }
 
 func saveObject(payload string, bucket string, useMinio bool) string {
-	key := fmt.Sprintf("transfer-payload-%dbytes-%s", int64(len(payload)), GeneratePayloadFromGlobalRandom(20))
+	key := fmt.Sprintf("transfer-payload-%dbytes-%s", int64(len(payload)), generateTrulyRandomBytes(20))
 	log.Infof(`Using storage, saving transfer payload (~%d bytes) as %q to %q.`, len(payload), key, bucket)
 
 	var uploadResult string

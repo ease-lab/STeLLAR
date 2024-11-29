@@ -38,13 +38,10 @@ const (
 //InitializeGlobalRandomPayload creates the initial transfer payload to be used for quicker random payload generation
 func InitializeGlobalRandomPayload() {
 	const (
-		uniquePayloadBytes = 1024 * 1024 // 1 MB, unique and randomized
+		uniquePayloadBytesLength = 1024 * 1024 // 1 MB, unique and randomized
 	)
 
-	uniquePayload := make([]byte, uniquePayloadBytes)
-	for i := range uniquePayload {
-		uniquePayload[i] = allowedChars[rand.Intn(len(allowedChars))]
-	}
+	uniquePayload := generateTrulyRandomBytes(uniquePayloadBytesLength)
 	GlobalRandomPayload = string(uniquePayload)
 
 	// Double the random payload 3 times by concatenation, fastest way to get from 1MB to 8MB
@@ -53,6 +50,15 @@ func InitializeGlobalRandomPayload() {
 		length *= 2
 		GlobalRandomPayload = GeneratePayloadFromGlobalRandom(length)
 	}
+}
+
+func generateTrulyRandomBytes(uniquePayloadBytesLength int) []byte {
+	rand.Seed(time.Now().UnixNano())
+	uniquePayload := make([]byte, uniquePayloadBytesLength)
+	for i := range uniquePayload {
+		uniquePayload[i] = allowedChars[rand.Intn(len(allowedChars))]
+	}
+	return uniquePayload
 }
 
 //GeneratePayloadFromGlobalRandom creates a transfer payload for the producer-consumer chain
